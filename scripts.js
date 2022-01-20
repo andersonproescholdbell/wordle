@@ -25,12 +25,24 @@ function createTiles(length) {
     }
 }
 
-function createKeyboard() {
+function createKeyboard(length, word) {
     function createKey(letter) {
         var key = document.createElement('button');
         key.innerHTML = letter;
         key.classList.add('key');
         key.setAttribute('data-key', letter.toLowerCase());
+        key.setAttribute('onclick', `letter("${l}")`);
+        var div = document.createElement('div');
+        div.classList.add('keyCon');
+        div.appendChild(key);
+        return div;
+    }
+
+    function createFunc(letter, onclick) {
+        var key = document.createElement('button');
+        key.classList.add('func');
+        key.innerHTML = letter;
+        key.setAttribute('onclick', onclick);
         var div = document.createElement('div');
         div.classList.add('keyCon');
         div.appendChild(key);
@@ -48,9 +60,13 @@ function createKeyboard() {
     }
 
     let row3 = document.getElementById('row3');
+    row3.appendChild(createFunc('Enter', `submit(${length}, "${word}")`));
+
     for (var l of 'ZXCVBNM') {
         row3.appendChild(createKey(l));
     }
+
+    row3.appendChild(createFunc('Backspace', `back()`));
 }
 
 async function submit(length, word) {
@@ -130,9 +146,9 @@ function generateWord(length) {
 
 function main() {
     let length = 5;
-    createTiles(length);
-    createKeyboard();
     let word = generateWord(5); 
+    createTiles(length);
+    createKeyboard(length, word);
 
     document.addEventListener('keyup', (e) => {
         if (e.code === 'Enter') {
